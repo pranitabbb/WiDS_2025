@@ -1,8 +1,6 @@
 import streamlit as st
 import json
-import matplotlib.pyplot as plt
 
-# Title
 st.title("Federated Learning Training Monitor")
 
 st.markdown("""
@@ -12,27 +10,25 @@ for the PlantVillage dataset.
 
 # Load metrics
 with open("week4_round_accuracy.json", "r") as f:
-    accuracy_dict = json.load(f)
+    acc = json.load(f)
 
-rounds = list(map(int, accuracy_dict.keys()))
-accuracies = list(accuracy_dict.values())
+rounds = list(map(int, acc.keys()))
+values = list(acc.values())
 
-# Plot
-plt.figure(figsize=(8, 4))
-plt.plot(rounds, accuracies, marker="o", linewidth=2)
-plt.xlabel("Federated Round")
-plt.ylabel("Global Test Accuracy")
-plt.title("Global Accuracy vs Federated Rounds")
-plt.grid(True)
+# Create dataframe-like structure
+chart_data = {
+    "Federated Round": rounds,
+    "Global Accuracy": values
+}
 
-st.pyplot(plt)
+# Plot using Streamlit (NO matplotlib)
+st.line_chart(chart_data, x="Federated Round", y="Global Accuracy")
 
-# Final summary
 st.markdown("### Final Result")
-st.write(f"Final Global Accuracy: **{accuracies[-1]*100:.2f}%**")
+st.write(f"Final Global Accuracy: **{values[-1]*100:.2f}%**")
 
 st.markdown("""
-**Observation:**
+**Observation**
 - Accuracy improves rapidly in early rounds
 - Stabilizes after convergence
 - Demonstrates effective federated aggregation
